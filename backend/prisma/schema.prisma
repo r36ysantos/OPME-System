@@ -49,6 +49,12 @@ enum TaskStatus {
   REPROVADO
 }
 
+enum StockMovementType {
+  SAIDA
+  ESTORNO
+  CANCELAMENTO
+}
+
 model User {
   id                 String    @id @default(uuid())
   email              String    @unique
@@ -68,6 +74,7 @@ model User {
   uploadedFiles       File[]
   receivedPermissions UserPermission[]  @relation("ReceivedPermissions")
   grantedPermissions  UserPermission[]  @relation("GrantedPermissions")
+  stockMovements      StockMovement[]
 
   @@map("users")
 }
@@ -152,6 +159,7 @@ model Material {
 
   supplier           Supplier?           @relation(fields: [supplierId], references: [id])
   procedureMaterials ProcedureMaterial[]
+  stockMovements     StockMovement[]
 
   @@map("materials")
 }
@@ -171,20 +179,23 @@ model Procedure {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
-  patient    Patient             @relation(fields: [patientId], references: [id])
-  doctor     Doctor              @relation(fields: [doctorId], references: [id])
-  materials  ProcedureMaterial[]
-  workflow   Workflow?
-  files      File[]
+  patient        Patient             @relation(fields: [patientId], references: [id])
+  doctor         Doctor              @relation(fields: [doctorId], references: [id])
+  materials      ProcedureMaterial[]
+  workflow       Workflow?
+  files          File[]
+  stockMovements StockMovement[]
 
   @@map("procedures")
 }
 
 model ProcedureMaterial {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   procedureId String
   materialId  String
   quantity    Int
+  unit        String?
+  notes       String?
 
   procedure Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
   material  Material  @relation(fields: [materialId], references: [id])
@@ -298,4 +309,23 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id])
 
   @@map("audit_logs")
+}
+
+model StockMovement {
+  id            String            @id @default(uuid())
+  materialId    String
+  procedureId   String?
+  userId        String
+  type          StockMovementType
+  quantity      Int
+  previousStock Int
+  newStock      Int
+  notes         String?
+  createdAt     DateTime          @default(now())
+
+  material  Material   @relation(fields: [materialId], references: [id])
+  procedure Procedure? @relation(fields: [procedureId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
+
+  @@map("stock_movements")
 }

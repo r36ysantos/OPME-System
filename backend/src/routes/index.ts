@@ -28,6 +28,7 @@ import * as fileController       from '../controllers/fileController';
 import * as dashboardController  from '../controllers/dashboardController';
 import * as reportController     from '../controllers/reportController';
 import * as permissionController from '../controllers/permissionController';
+import * as stockMovementController from '../controllers/stockMovementController';
 
 export const router = Router();
 
@@ -102,6 +103,12 @@ router.get('/procedures/:id', authenticate, checkModule('PROCEDURES', 'view'),  
 router.post('/procedures',    authenticate, checkModule('PROCEDURES', 'create'), auditLog('CREATE', 'Procedure'), procedureController.createProcedure);
 router.put('/procedures/:id', authenticate, checkModule('PROCEDURES', 'edit'),   auditLog('UPDATE', 'Procedure'), procedureController.updateProcedure);
 router.delete('/procedures/:id', authenticate, checkModule('PROCEDURES', 'delete'), procedureController.deleteProcedure);
+
+// ─── Stock Movements ──────────────────────────────────────────────────────────
+
+router.get('/stock-movements',                authenticate, checkModule('MATERIALS', 'view'), stockMovementController.listStockMovements);
+router.get('/materials/:id/movements',        authenticate, checkModule('MATERIALS', 'view'), stockMovementController.getMaterialMovements);
+router.get('/procedures/:id/movements',       authenticate, checkModule('PROCEDURES', 'view'), stockMovementController.getProcedureMovements);
 
 // ─── Workflows ────────────────────────────────────────────────────────────────
 

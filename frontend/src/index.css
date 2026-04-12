@@ -2,32 +2,159 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Custom scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
 @layer base {
+  html {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  }
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "cv02","cv03","cv04","cv11";
+  }
+  * { outline: none; }
+}
+
+/* ─── Components ────────────────────────────────────────────────────────────── */
+@layer components {
+
+  /* ── PRIMARY BUTTON — Neo-Brutalist Push ── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-brand text-white
+           text-sm font-bold tracking-wide
+           px-4 py-2.5
+           border-2 border-ink rounded-[10px]
+           shadow-hard
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-hard;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .btn-primary:hover:not(:disabled) {
+    @apply translate-x-1 translate-y-1 shadow-none bg-[#1D4ED8];
+  }
+  .btn-primary:active:not(:disabled) {
+    @apply translate-x-1 translate-y-1 shadow-none bg-[#1D4ED8];
+  }
+
+  /* ── SECONDARY BUTTON ── */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white text-ink
+           text-sm font-bold tracking-wide
+           px-4 py-2.5
+           border-2 border-ink rounded-[10px]
+           shadow-hard
+           transition-all duration-150;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .btn-secondary:hover {
+    @apply translate-x-1 translate-y-1 shadow-none bg-canvas;
+  }
+  .btn-secondary:active {
+    @apply translate-x-1 translate-y-1 shadow-none;
+  }
+
+  /* ── DANGER BUTTON ── */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2
+           bg-red-600 text-white
+           text-sm font-bold tracking-wide
+           px-4 py-2.5
+           border-2 border-ink rounded-[10px]
+           shadow-hard
+           transition-all duration-150;
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .btn-danger:hover {
+    @apply translate-x-1 translate-y-1 shadow-none bg-red-700;
+  }
+
+  /* ── CARD ── */
+  .card {
+    @apply bg-white rounded-2xl p-6
+           border-2 border-[#E2E8F0]
+           shadow-hard-card
+           transition-all duration-150;
+  }
+  .card-hover {
+    @apply card cursor-pointer;
+  }
+  .card-hover:hover {
+    @apply -translate-x-0.5 -translate-y-0.5 shadow-hard-card-hover border-[#CBD5E1];
+  }
+
+  /* ── INPUT ── */
+  .input {
+    @apply block w-full
+           bg-white text-ink text-sm
+           px-3 py-2.5
+           border-2 border-[#CBD5E1] rounded-[10px]
+           placeholder:text-[#94A3B8]
+           transition-all duration-150;
+  }
+  .input:hover:not(:focus) {
+    @apply border-[#94A3B8];
+  }
+  .input:focus {
+    border-color: #2563EB;
+    box-shadow: 3px 3px 0px 0px #2563EB;
+  }
+
+  /* ── LABEL ── */
+  .label {
+    @apply block text-sm font-semibold text-sage mb-1.5;
+  }
+
+  /* ── BADGE — Geométrico, uppercase ── */
+  .badge {
+    @apply inline-flex items-center gap-1
+           px-2 py-0.5 rounded-[6px]
+           text-[10px] font-bold uppercase tracking-[0.05em];
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-  .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg border border-gray-300 transition-colors duration-200;
-  }
-  .btn-danger {
-    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
-  }
-  .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
-  }
-  .input {
-    @apply block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
-  }
-  .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
-  }
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
+/* ─── Skeleton loader ────────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* ─── Dot-grid pattern (KPI cards) ──────────────────────────────────────────── */
+.dot-grid {
+  background-image: radial-gradient(#2563EB0D 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ─── Tooltip ─────────────────────────────────────────────────────────────────── */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: #0F172A;
+  color: #F8FAFC;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #334155;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .12s, transform .12s;
+  z-index: 99;
+}
+[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
 }

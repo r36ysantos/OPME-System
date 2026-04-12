@@ -823,7 +823,7 @@ function FileCard({
           </div>
         )}
         {canPreview && file.exists && (
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-xl transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-xl transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
             <Eye className="h-6 w-6 text-white drop-shadow" />
           </div>
         )}
