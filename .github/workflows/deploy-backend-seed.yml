@@ -1,0 +1,45 @@
+name: Seed Database (run once after first deploy)
+
+# Execute este workflow MANUALMENTE uma única vez após o primeiro deploy no Render.
+# Ele roda o seed de produção via API do Render.
+# Acesse: GitHub → Actions → "Seed Database" → Run workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Digite "seed" para confirmar'
+        required: true
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm == 'seed' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Generate Prisma Client
+        working-directory: backend
+        run: npx prisma generate
+
+      - name: Compile TypeScript
+        working-directory: backend
+        run: npm run build
+
+      - name: Run production seed
+        working-directory: backend
+        run: node -e "require('./dist/seed-prod.js')"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NODE_ENV: production
