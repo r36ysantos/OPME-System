@@ -1,0 +1,301 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ANALISTA_OPME
+  ASSISTENTE_OPME
+  COMPRADOR_OPME
+  ENFERMEIRO_AUDITOR
+  COORDENADOR_OPME
+}
+
+enum ProcedureStatus {
+  PENDENTE
+  EM_ANALISE
+  APROVADO
+  REPROVADO
+  EM_COMPRA
+  FINALIZADO
+  CANCELADO
+}
+
+enum WorkflowStep {
+  ANALISE_INICIAL
+  VALIDACAO_TECNICA
+  COMPRA
+  AUDITORIA_CLINICA
+  APROVACAO_FINAL
+  CONCLUIDO
+}
+
+enum WorkflowStatus {
+  EM_ANDAMENTO
+  APROVADO
+  REPROVADO
+  CONCLUIDO
+}
+
+enum TaskStatus {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDO
+  REPROVADO
+}
+
+model User {
+  id                 String    @id @default(uuid())
+  email              String    @unique
+  password           String
+  name               String
+  role               Role
+  phone              String?
+  active             Boolean   @default(true)
+  tokenVersion       Int       @default(0)
+  passwordChangedAt  DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  auditLogs           AuditLog[]
+  workflowTasks       WorkflowTask[]
+  workflowHistory     WorkflowHistory[]
+  uploadedFiles       File[]
+  receivedPermissions UserPermission[]  @relation("ReceivedPermissions")
+  grantedPermissions  UserPermission[]  @relation("GrantedPermissions")
+
+  @@map("users")
+}
+
+model Patient {
+  id            String   @id @default(uuid())
+  name          String
+  cpf           String   @unique
+  birthDate     DateTime
+  phone         String?
+  email         String?
+  address       String?
+  city          String?
+  state         String?
+  medicalRecord String?
+  healthPlan    String?
+  notes         String?
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  procedures Procedure[]
+  files      File[]
+
+  @@map("patients")
+}
+
+model Doctor {
+  id        String   @id @default(uuid())
+  name      String
+  crm       String   @unique
+  specialty String
+  phone     String?
+  email     String?
+  hospital  String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  procedures Procedure[]
+
+  @@map("doctors")
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  cnpj      String   @unique
+  email     String?
+  phone     String?
+  address   String?
+  city      String?
+  state     String?
+  contact   String?
+  contract  String?
+  sla       String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  materials Material[]
+
+  @@map("suppliers")
+}
+
+model Material {
+  id          String    @id @default(uuid())
+  name        String
+  code        String    @unique
+  description String?
+  lot         String?
+  expiryDate  DateTime?
+  quantity    Int       @default(0)
+  unitPrice   Decimal?  @db.Decimal(10, 2)
+  unit        String?
+  brand       String?
+  anvisa      String?
+  supplierId  String?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  supplier           Supplier?           @relation(fields: [supplierId], references: [id])
+  procedureMaterials ProcedureMaterial[]
+
+  @@map("materials")
+}
+
+model Procedure {
+  id          String          @id @default(uuid())
+  name        String
+  type        String
+  complexity  String
+  patientId   String
+  doctorId    String
+  scheduledAt DateTime?
+  status      ProcedureStatus @default(PENDENTE)
+  notes       String?
+  cid         String?
+  tuss        String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  patient    Patient             @relation(fields: [patientId], references: [id])
+  doctor     Doctor              @relation(fields: [doctorId], references: [id])
+  materials  ProcedureMaterial[]
+  workflow   Workflow?
+  files      File[]
+
+  @@map("procedures")
+}
+
+model ProcedureMaterial {
+  id          String @id @default(uuid())
+  procedureId String
+  materialId  String
+  quantity    Int
+
+  procedure Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+  material  Material  @relation(fields: [materialId], references: [id])
+
+  @@unique([procedureId, materialId])
+  @@map("procedure_materials")
+}
+
+model Workflow {
+  id          String         @id @default(uuid())
+  procedureId String         @unique
+  currentStep WorkflowStep   @default(ANALISE_INICIAL)
+  status      WorkflowStatus @default(EM_ANDAMENTO)
+  priority    String         @default("NORMAL")
+  dueDate     DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  procedure Procedure         @relation(fields: [procedureId], references: [id])
+  tasks     WorkflowTask[]
+  history   WorkflowHistory[]
+
+  @@map("workflows")
+}
+
+model WorkflowTask {
+  id           String       @id @default(uuid())
+  workflowId   String
+  assignedToId String?
+  step         WorkflowStep
+  status       TaskStatus   @default(PENDENTE)
+  notes        String?
+  dueDate      DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  assignedTo User?    @relation(fields: [assignedToId], references: [id])
+
+  @@map("workflow_tasks")
+}
+
+model WorkflowHistory {
+  id           String        @id @default(uuid())
+  workflowId   String
+  userId       String
+  action       String
+  previousStep WorkflowStep?
+  newStep      WorkflowStep?
+  notes        String?
+  createdAt    DateTime      @default(now())
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@map("workflow_history")
+}
+
+model File {
+  id           String   @id @default(uuid())
+  name         String
+  originalName String
+  mimeType     String
+  size         Int
+  path         String
+  patientId    String?
+  procedureId  String?
+  uploadedById String
+  version      Int      @default(1)
+  description  String?
+  createdAt    DateTime @default(now())
+
+  patient    Patient?   @relation(fields: [patientId], references: [id])
+  procedure  Procedure? @relation(fields: [procedureId], references: [id])
+  uploadedBy User       @relation(fields: [uploadedById], references: [id])
+
+  @@map("files")
+}
+
+model UserPermission {
+  id          String   @id @default(uuid())
+  userId      String
+  module      String   // DASHBOARD | PATIENTS | DOCTORS | SUPPLIERS | MATERIALS | PROCEDURES | WORKFLOWS | REPORTS | FILES | USERS | AUDIT
+  canView     Boolean  @default(true)
+  canCreate   Boolean  @default(false)
+  canEdit     Boolean  @default(false)
+  canDelete   Boolean  @default(false)
+  grantedById String
+  grantedAt   DateTime @default(now())
+  notes       String?
+
+  user      User @relation("ReceivedPermissions", fields: [userId], references: [id], onDelete: Cascade)
+  grantedBy User @relation("GrantedPermissions", fields: [grantedById], references: [id])
+
+  @@unique([userId, module])
+  @@map("user_permissions")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}

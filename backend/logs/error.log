@@ -1,0 +1,1 @@
+{"level":"error","message":"Credenciais inválidas","method":"POST","stack":"Error: Credenciais inválidas\n    at login (/app/dist/controllers/authController.js:21:19)","timestamp":"2026-04-11 20:57:14","url":"/api/auth/login"}

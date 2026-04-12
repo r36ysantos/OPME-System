@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: opme_postgres
+    environment:
+      POSTGRES_USER: opme_user
+      POSTGRES_PASSWORD: opme_pass123
+      POSTGRES_DB: opme_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opme_user -d opme_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: opme_backend
+    environment:
+      DATABASE_URL: "postgresql://opme_user:opme_pass123@postgres:5432/opme_db"
+      JWT_SECRET: "opme-system-jwt-secret-key-2024-production-ready-secure"
+      JWT_EXPIRES_IN: "8h"
+      PORT: 3001
+      NODE_ENV: production
+      UPLOAD_DIR: "/app/uploads"
+      MAX_FILE_SIZE: "52428800"
+      ALLOWED_FILE_TYPES: "application/pdf,image/jpeg,image/png,image/jpg,image/gif,image/webp,image/bmp,image/tiff,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/csv"
+      CORS_ORIGIN: "http://localhost:5173"
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: opme_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
