@@ -109,7 +109,9 @@
       "Bash(curl -s \"https://api.github.com/repos/r36ysantos/OPME-System/actions/runs/24318848277/jobs\")",
       "Bash(curl -s \"https://api.github.com/repos/r36ysantos/OPME-System/actions/jobs/71001225091/logs\" -L)",
       "Bash(curl -s \"https://api.github.com/repos/r36ysantos/OPME-System/actions/runs?per_page=1\")",
-      "Bash(curl -s \"https://api.github.com/repos/r36ysantos/OPME-System/actions/runs/24318938764\")"
+      "Bash(curl -s \"https://api.github.com/repos/r36ysantos/OPME-System/actions/runs/24318938764\")",
+      "Bash(docker compose:*)",
+      "Bash(curl -s http://localhost:3001/health)"
     ]
   }
 }
