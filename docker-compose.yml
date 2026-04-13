@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     container_name: sgp_backend
     environment:
-      DATABASE_URL: "postgresql://sgp_user:sgp_pass123@postgres:5432/sgp_db"
+      DATABASE_URL: "postgresql://sgp_user:sgp_pass123@postgres:5432/opme_db"
       JWT_SECRET: "sgp-sistema-gerenciamento-procedimentos-jwt-secret-key-2024"
       JWT_EXPIRES_IN: "8h"
       PORT: 3001

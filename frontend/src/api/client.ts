@@ -21,7 +21,7 @@ api.interceptors.response.use(
 
       // Only redirect if not already on the login page (avoids redirect loops)
       if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/SGP/login';
+        window.location.href = import.meta.env.BASE_URL + 'login';
       }
     }
     return Promise.reject(error);
