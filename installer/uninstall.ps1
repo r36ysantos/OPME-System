@@ -1,9 +1,9 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    OPME System — Desinstalador para Windows
+    SGP - Sistema de Gerenciamento de Procedimentos — Desinstalador para Windows
 .DESCRIPTION
-    Remove completamente o OPME System, containers, imagens, volumes e dados.
+    Remove completamente o SGP - Sistema de Gerenciamento de Procedimentos, containers, imagens, volumes e dados.
     Oferece opção de backup antes da remoção.
 #>
 
@@ -31,7 +31,7 @@ function Write-Log {
 Clear-Host
 Write-Host @"
 ╔══════════════════════════════════════════════════════════╗
-║         OPME System — Desinstalador                      ║
+║         SGP - Sistema de Gerenciamento de Procedimentos — Desinstalador                      ║
 ║   ⚠  Esta ação removerá o sistema e todos os dados!      ║
 ╚══════════════════════════════════════════════════════════╝
 "@ -ForegroundColor Red
@@ -43,7 +43,7 @@ if ($confirm -ne "DESINSTALAR") {
     exit 0
 }
 
-Set-Content -Path $LOG_FILE -Value "# OPME System Uninstall Log — $(Get-Date)" -Encoding UTF8
+Set-Content -Path $LOG_FILE -Value "# SGP - Sistema de Gerenciamento de Procedimentos Uninstall Log — $(Get-Date)" -Encoding UTF8
 Write-Log "Desinstalação iniciada pelo usuário" "INFO"
 
 # ─── ETAPA 1: Backup opcional ─────────────────────────────────────────────────
@@ -57,10 +57,10 @@ if ($doBackup -ne "n" -and $doBackup -ne "N") {
 
     # Backup do PostgreSQL
     try {
-        $pgRunning = docker ps --filter "name=opme_postgres" --format "{{.Names}}" 2>$null
-        if ($pgRunning -eq "opme_postgres") {
+        $pgRunning = docker ps --filter "name=sgp_postgres" --format "{{.Names}}" 2>$null
+        if ($pgRunning -eq "sgp_postgres") {
             $dumpFile = Join-Path $BACKUP_DIR "opme_backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').sql"
-            docker exec opme_postgres pg_dump -U opme_user opme_db | Set-Content -Path $dumpFile -Encoding UTF8
+            docker exec sgp_postgres pg_dump -U sgp_user sgp_db | Set-Content -Path $dumpFile -Encoding UTF8
             Write-Log "Backup do banco salvo em: $dumpFile" "SUCCESS"
 
             # Backup dos arquivos de upload
@@ -109,7 +109,7 @@ $removeVolumes = Read-Host "Remover TODOS os dados do banco permanentemente? (s/
 if ($removeVolumes -eq "s" -or $removeVolumes -eq "S") {
     try {
         docker compose down -v 2>&1 | Out-Null
-        docker volume rm opme-system_postgres_data 2>&1 | Out-Null
+        docker volume rm sgp_postgres_data 2>&1 | Out-Null
         Write-Log "Volumes e dados removidos" "SUCCESS"
     } catch {
         Write-Log "Volumes já removidos ou não encontrados" "WARN"
@@ -120,11 +120,11 @@ if ($removeVolumes -eq "s" -or $removeVolumes -eq "S") {
 
 # ─── ETAPA 4: Remover imagens Docker ─────────────────────────────────────────
 
-Write-Log "Removendo imagens Docker do OPME System" "STEP"
+Write-Log "Removendo imagens Docker do SGP - Sistema de Gerenciamento de Procedimentos" "STEP"
 $removeImages = Read-Host "Remover imagens Docker do sistema? (Libera espaço em disco) (S/n)"
 
 if ($removeImages -ne "n" -and $removeImages -ne "N") {
-    $images = @("opme-system-frontend", "opme-system-backend", "opme-system_frontend", "opme-system_backend")
+    $images = @("sgp-frontend", "sgp-backend", "sgp_frontend", "sgp_backend")
     foreach ($img in $images) {
         try {
             docker rmi $img 2>&1 | Out-Null
@@ -142,8 +142,8 @@ if ($removeImages -ne "n" -and $removeImages -ne "N") {
 Write-Log "Removendo atalhos da área de trabalho" "STEP"
 $desktop = [Environment]::GetFolderPath("Desktop")
 $shortcuts = @(
-    "$desktop\OPME System.lnk",
-    "$desktop\Iniciar OPME System.lnk"
+    "$desktop\SGP - Sistema de Gerenciamento de Procedimentos.lnk",
+    "$desktop\Iniciar SGP - Sistema de Gerenciamento de Procedimentos.lnk"
 )
 foreach ($s in $shortcuts) {
     if (Test-Path $s) {
@@ -186,7 +186,7 @@ if (Test-Path $BACKUP_DIR) {
     Write-Host "║     $($BACKUP_DIR.PadRight(52))║" -ForegroundColor Yellow
 }
 Write-Host "║                                                          ║" -ForegroundColor Green
-Write-Host "║  O OPME System foi removido completamente.               ║" -ForegroundColor White
+Write-Host "║  O SGP - Sistema de Gerenciamento de Procedimentos foi removido completamente.               ║" -ForegroundColor White
 Write-Host "║  Obrigado por usar o sistema!                            ║" -ForegroundColor White
 Write-Host "╚══════════════════════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""

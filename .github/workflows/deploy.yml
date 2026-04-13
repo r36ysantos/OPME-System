@@ -1,4 +1,4 @@
-name: Deploy Frontend → GitHub Pages
+name: SGP — Deploy Frontend → GitHub Pages
 
 on:
   push:

@@ -1,11 +1,12 @@
 @echo off
-title OPME System - Iniciando...
+title SGP - Iniciando...
 color 0B
 cd /d "%~dp0"
 
 echo.
 echo  ============================================================
-echo    OPME System - Iniciando servicos
+echo    SGP - Sistema de Gerenciamento de Procedimentos
+echo    Iniciando servicos...
 echo  ============================================================
 echo.
 
@@ -21,7 +22,7 @@ if %errorLevel% neq 0 (
 )
 
 :: Verifica se já está rodando
-docker ps --filter "name=opme_frontend" --format "{{.Status}}" 2>nul | findstr "Up" >nul
+docker ps --filter "name=sgp_frontend" --format "{{.Status}}" 2>nul | findstr "Up" >nul
 if %errorLevel% equ 0 (
     color 0A
     echo  Sistema ja esta em execucao!
@@ -52,7 +53,7 @@ timeout /t 30 /nobreak > nul
 color 0A
 echo.
 echo  ============================================================
-echo    Sistema iniciado com sucesso!
+echo    SGP iniciado com sucesso!
 echo.
 echo    Acesse:  http://localhost:5173
 echo    Login:   admin@opme.com

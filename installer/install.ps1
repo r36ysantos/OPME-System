@@ -1,9 +1,9 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    OPME System — Instalador automatizado para Windows
+    SGP - Sistema de Gerenciamento de Procedimentos — Instalador automatizado para Windows
 .DESCRIPTION
-    Instala o OPME System completo (Frontend, Backend, PostgreSQL, Redis)
+    Instala o SGP - Sistema de Gerenciamento de Procedimentos completo (Frontend, Backend, PostgreSQL, Redis)
     usando Docker Compose. Zero dependências manuais além do Docker Desktop.
 .NOTES
     Execute como Administrador: Right-click → "Run as Administrator"
@@ -48,7 +48,7 @@ function Write-Banner {
     Clear-Host
     Write-Host @"
 ╔══════════════════════════════════════════════════════════╗
-║          OPME System — Instalador v1.0                   ║
+║          SGP - Sistema de Gerenciamento de Procedimentos — Instalador v1.0                   ║
 ║   Gestão de Órteses, Próteses e Materiais Especiais      ║
 ╚══════════════════════════════════════════════════════════╝
 "@ -ForegroundColor Blue
@@ -217,7 +217,7 @@ function Get-UserConfiguration {
     Write-Log "Configuração do sistema" "STEP"
 
     Write-Host ""
-    Write-Host "Vamos configurar o seu ambiente OPME System." -ForegroundColor White
+    Write-Host "Vamos configurar o seu ambiente SGP - Sistema de Gerenciamento de Procedimentos." -ForegroundColor White
     Write-Host "Pressione ENTER para aceitar os valores padrão (recomendado)." -ForegroundColor Gray
     Write-Host ""
 
@@ -261,7 +261,7 @@ function New-EnvFile {
     $script:ENV_CREATED = $true
     $envContent = @"
 # ═══════════════════════════════════════════════════════
-#  OPME System — Configurações de Ambiente
+#  SGP - Sistema de Gerenciamento de Procedimentos — Configurações de Ambiente
 #  Gerado automaticamente em: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss")
 #  ⚠ NÃO compartilhe este arquivo — contém senhas!
 # ═══════════════════════════════════════════════════════
@@ -372,7 +372,7 @@ function Test-SystemHealth {
     }
 
     # Verifica PostgreSQL
-    $pgStatus = docker exec opme_postgres pg_isready -U opme_user -d opme_db 2>&1
+    $pgStatus = docker exec sgp_postgres pg_isready -U opme_user -d opme_db 2>&1
     if ($pgStatus -match "accepting connections") {
         Write-Log "PostgreSQL: OK" "SUCCESS"
     } else {
@@ -404,17 +404,17 @@ function New-Shortcuts {
     $wsh = New-Object -ComObject WScript.Shell
 
     # Atalho para abrir o sistema
-    $shortcut = $wsh.CreateShortcut("$desktop\OPME System.lnk")
+    $shortcut = $wsh.CreateShortcut("$desktop\SGP - Sistema de Gerenciamento de Procedimentos.lnk")
     $shortcut.TargetPath = "http://localhost:$($script:FRONTEND_PORT)"
-    $shortcut.Description = "Abrir OPME System no navegador"
+    $shortcut.Description = "Abrir SGP - Sistema de Gerenciamento de Procedimentos no navegador"
     $shortcut.Save()
 
     # Atalho para iniciar o sistema
     $startBat = Join-Path $ROOT_DIR "iniciar.bat"
-    $shortcut2 = $wsh.CreateShortcut("$desktop\Iniciar OPME System.lnk")
+    $shortcut2 = $wsh.CreateShortcut("$desktop\Iniciar SGP - Sistema de Gerenciamento de Procedimentos.lnk")
     $shortcut2.TargetPath = $startBat
     $shortcut2.WorkingDirectory = $ROOT_DIR
-    $shortcut2.Description = "Iniciar serviços do OPME System"
+    $shortcut2.Description = "Iniciar serviços do SGP - Sistema de Gerenciamento de Procedimentos"
     $shortcut2.Save()
 
     Write-Log "Atalhos criados na área de trabalho" "SUCCESS"
@@ -446,10 +446,10 @@ function Show-Summary {
 try {
     # Inicializa log
     $null = New-Item -Path (Split-Path $LOG_FILE -Parent) -ItemType Directory -Force
-    Set-Content -Path $LOG_FILE -Value "# OPME System Install Log — $(Get-Date)" -Encoding UTF8
+    Set-Content -Path $LOG_FILE -Value "# SGP - Sistema de Gerenciamento de Procedimentos Install Log — $(Get-Date)" -Encoding UTF8
 
     Write-Banner
-    Write-Log "Iniciando instalação do OPME System" "INFO"
+    Write-Log "Iniciando instalação do SGP - Sistema de Gerenciamento de Procedimentos" "INFO"
     Write-Log "Diretório raiz: $ROOT_DIR" "INFO"
 
     Test-Prerequisites

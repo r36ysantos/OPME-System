@@ -60,8 +60,8 @@ export default function Sidebar({ open, onToggle }: SidebarProps) {
               <Package className="h-4 w-4 text-[#2563EB]" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-sm font-extrabold text-white leading-none tracking-tight">OPME System</h1>
-              <p className="text-[10px] text-blue-200 mt-0.5 font-semibold uppercase tracking-widest">Gestão Hospitalar</p>
+              <h1 className="text-sm font-extrabold text-white leading-none tracking-tight">SGP</h1>
+              <p className="text-[10px] text-blue-200 mt-0.5 font-semibold uppercase tracking-widest">Ger. de Procedimentos</p>
             </div>
           </div>
         )}

@@ -3,17 +3,17 @@ version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: opme_postgres
+    container_name: sgp_postgres
     environment:
-      POSTGRES_USER: opme_user
-      POSTGRES_PASSWORD: opme_pass123
-      POSTGRES_DB: opme_db
+      POSTGRES_USER: sgp_user
+      POSTGRES_PASSWORD: sgp_pass123
+      POSTGRES_DB: sgp_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U opme_user -d opme_db"]
+      test: ["CMD-SHELL", "pg_isready -U sgp_user -d sgp_db"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -23,10 +23,10 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: opme_backend
+    container_name: sgp_backend
     environment:
-      DATABASE_URL: "postgresql://opme_user:opme_pass123@postgres:5432/opme_db"
-      JWT_SECRET: "opme-system-jwt-secret-key-2024-production-ready-secure"
+      DATABASE_URL: "postgresql://sgp_user:sgp_pass123@postgres:5432/sgp_db"
+      JWT_SECRET: "sgp-sistema-gerenciamento-procedimentos-jwt-secret-key-2024"
       JWT_EXPIRES_IN: "8h"
       PORT: 3001
       NODE_ENV: production
@@ -48,7 +48,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: opme_frontend
+    container_name: sgp_frontend
     ports:
       - "5173:80"
     depends_on:

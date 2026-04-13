@@ -55,9 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading]   = useState(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('opme_token');
-    const savedUser  = localStorage.getItem('opme_user');
-    const savedPerms = localStorage.getItem('opme_permissions');
+    const savedToken = localStorage.getItem('sgp_token');
+    const savedUser  = localStorage.getItem('sgp_user');
+    const savedPerms = localStorage.getItem('sgp_permissions');
 
     if (savedToken && savedUser) {
       setToken(savedToken);
@@ -74,9 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user);
     setPermissions(data.permissions ?? []);
 
-    localStorage.setItem('opme_token',       data.token);
-    localStorage.setItem('opme_user',        JSON.stringify(data.user));
-    localStorage.setItem('opme_permissions', JSON.stringify(data.permissions ?? []));
+    localStorage.setItem('sgp_token',       data.token);
+    localStorage.setItem('sgp_user',        JSON.stringify(data.user));
+    localStorage.setItem('sgp_permissions', JSON.stringify(data.permissions ?? []));
     api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   };
 
@@ -84,9 +84,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setUser(null);
     setPermissions([]);
-    localStorage.removeItem('opme_token');
-    localStorage.removeItem('opme_user');
-    localStorage.removeItem('opme_permissions');
+    localStorage.removeItem('sgp_token');
+    localStorage.removeItem('sgp_user');
+    localStorage.removeItem('sgp_permissions');
     delete api.defaults.headers.common['Authorization'];
   };
 

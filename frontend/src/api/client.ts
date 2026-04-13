@@ -14,21 +14,21 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Clean ALL auth state — storage + in-memory axios header
-      localStorage.removeItem('opme_token');
-      localStorage.removeItem('opme_user');
-      localStorage.removeItem('opme_permissions');
+      localStorage.removeItem('sgp_token');
+      localStorage.removeItem('sgp_user');
+      localStorage.removeItem('sgp_permissions');
       delete api.defaults.headers.common['Authorization'];
 
       // Only redirect if not already on the login page (avoids redirect loops)
       if (!window.location.pathname.includes('/login')) {
-        window.location.href = '/OPME-System/login';
+        window.location.href = '/SGP/login';
       }
     }
     return Promise.reject(error);
   }
 );
 
-const savedToken = localStorage.getItem('opme_token');
+const savedToken = localStorage.getItem('sgp_token');
 if (savedToken) {
   api.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
 }

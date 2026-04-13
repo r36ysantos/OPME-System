@@ -18,7 +18,7 @@ import PatientFilesPage from './pages/PatientFilesPage';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/OPME-System">
+    <BrowserRouter basename="/SGP">
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

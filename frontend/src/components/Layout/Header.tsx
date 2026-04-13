@@ -201,9 +201,9 @@ export default function Header({ onMenuToggle }: HeaderProps) {
           </button>
 
           <div className="hidden sm:flex items-center gap-2 text-sm">
-            <span className="font-extrabold text-brand tracking-tight">OPME</span>
+            <span className="font-extrabold text-brand tracking-tight">SGP</span>
             <span className="text-[#CBD5E1] font-bold">/</span>
-            <span className="text-sage font-semibold">Sistema de Gestão</span>
+            <span className="text-sage font-semibold">Ger. de Procedimentos</span>
           </div>
         </div>
 

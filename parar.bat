@@ -1,11 +1,12 @@
 @echo off
-title OPME System - Parando...
+title SGP - Parando...
 color 0E
 cd /d "%~dp0"
 
 echo.
 echo  ============================================================
-echo    OPME System - Parando servicos
+echo    SGP - Sistema de Gerenciamento de Procedimentos
+echo    Parando servicos...
 echo  ============================================================
 echo.
 
@@ -21,7 +22,7 @@ docker compose down
 
 echo.
 color 0A
-echo  Sistema parado com sucesso.
+echo  SGP parado com sucesso.
 echo  Para iniciar novamente, execute: iniciar.bat
 echo.
 pause

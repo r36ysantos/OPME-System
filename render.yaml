@@ -1,7 +1,7 @@
 services:
   # ── Backend API ───────────────────────────────────────────────────────────────
   - type: web
-    name: opme-backend
+    name: sgp-backend
     runtime: node
     region: oregon
     rootDir: backend
@@ -15,7 +15,7 @@ services:
         value: 3001
       - key: DATABASE_URL
         fromDatabase:
-          name: opme-db
+          name: sgp-db
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
@@ -36,8 +36,8 @@ services:
 
 # ── PostgreSQL Database ───────────────────────────────────────────────────────
 databases:
-  - name: opme-db
+  - name: sgp-db
     region: oregon
-    databaseName: opme_db
-    user: opme_user
+    databaseName: sgp_db
+    user: sgp_user
     plan: free

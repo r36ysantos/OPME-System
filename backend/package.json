@@ -1,7 +1,7 @@
 {
-  "name": "opme-backend",
+  "name": "sgp-backend",
   "version": "1.0.0",
-  "description": "OPME System Backend API",
+  "description": "SGP - Sistema de Gerenciamento de Procedimentos (Backend API)",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
