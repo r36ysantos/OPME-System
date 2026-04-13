@@ -209,7 +209,7 @@ function PreviewModal({ file, onClose }: { file: PatientFile; onClose: () => voi
     setLoading(true);
     setError(false);
     try {
-      const token = localStorage.getItem('opme_token');
+      const token = localStorage.getItem('sgp_token');
       const res = await fetch(`/api/files/${file.id}/view`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -249,7 +249,7 @@ function PreviewModal({ file, onClose }: { file: PatientFile; onClose: () => voi
               href={`/api/files/${file.id}/download`}
               onClick={async (e) => {
                 e.preventDefault();
-                const token = localStorage.getItem('opme_token');
+                const token = localStorage.getItem('sgp_token');
                 const res = await fetch(`/api/files/${file.id}/download`, {
                   headers: { Authorization: `Bearer ${token}` },
                 });
@@ -581,7 +581,7 @@ export default function PatientFilesPage() {
 
   // ── Download ──
   const downloadFile = async (file: PatientFile) => {
-    const token = localStorage.getItem('opme_token');
+    const token = localStorage.getItem('sgp_token');
     const res = await fetch(`/api/files/${file.id}/download`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -886,7 +886,7 @@ function ImageThumbnail({ fileId }: { fileId: string }) {
   const [src, setSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('opme_token');
+    const token = localStorage.getItem('sgp_token');
     fetch(`/api/files/${fileId}/view`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.blob())
       .then((blob) => setSrc(URL.createObjectURL(blob)))
