@@ -6,12 +6,11 @@ RUN apk add --no-cache openssl openssl-dev libc6-compat
 WORKDIR /app
 
 COPY package.json ./
+# Copia o schema antes do install para que o postinstall (prisma generate) funcione
+COPY prisma ./prisma
 # Use --include=dev to ensure devDependencies (ts-jest, jest, etc.) are installed
 # even when NODE_ENV=production is set at runtime
 RUN npm install --include=dev --legacy-peer-deps
-
-COPY prisma ./prisma
-RUN npx prisma generate
 
 COPY tsconfig.json ./
 COPY src ./src
