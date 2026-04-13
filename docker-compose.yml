@@ -1,6 +1,8 @@
 version: '3.8'
 
 services:
+
+  # ── Banco de Dados ────────────────────────────────────────────────────────────
   postgres:
     image: postgres:15-alpine
     container_name: sgp_postgres
@@ -19,13 +21,14 @@ services:
       retries: 10
     restart: unless-stopped
 
+  # ── Backend API ───────────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: sgp_backend
     environment:
-      DATABASE_URL: "postgresql://sgp_user:sgp_pass123@postgres:5432/opme_db"
+      DATABASE_URL: "postgresql://sgp_user:sgp_pass123@postgres:5432/sgp_db"
       JWT_SECRET: "sgp-sistema-gerenciamento-procedimentos-jwt-secret-key-2024"
       JWT_EXPIRES_IN: "8h"
       PORT: 3001
@@ -44,6 +47,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  # ── Frontend ──────────────────────────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -55,5 +59,39 @@ services:
       - backend
     restart: unless-stopped
 
+  # ── Adminer — Interface Web Leve para o Banco ─────────────────────────────────
+  adminer:
+    image: adminer:latest
+    container_name: sgp_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DESIGN: pepa-linha-dark
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── pgAdmin 4 — Interface Web Profissional para o Banco ───────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: sgp_pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@sgp.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  pgadmin_data:

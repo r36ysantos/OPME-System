@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "SGP - PostgreSQL",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "sgp_db",
+      "Username": "sgp_user",
+      "Password": "sgp_pass123",
+      "SSLMode": "prefer",
+      "Comment": "Banco de dados do SGP - Sistema de Gerenciamento de Procedimentos"
+    }
+  }
+}

@@ -27,9 +27,11 @@ if %errorLevel% equ 0 (
     color 0A
     echo  Sistema ja esta em execucao!
     echo.
-    echo  Acesse: http://localhost:5173
-    echo  Login:  admin@opme.com
-    echo  Senha:  admin123
+    echo  ╔══════════════════════════════════════════════════════════╗
+    echo  ║  SGP Sistema:  http://localhost:5173                     ║
+    echo  ║  Adminer:      http://localhost:8080                     ║
+    echo  ║  pgAdmin 4:    http://localhost:5050                     ║
+    echo  ╚══════════════════════════════════════════════════════════╝
     echo.
     start http://localhost:5173
     pause
@@ -55,8 +57,21 @@ echo.
 echo  ============================================================
 echo    SGP iniciado com sucesso!
 echo.
+echo    SISTEMA PRINCIPAL
 echo    Acesse:  http://localhost:5173
 echo    Login:   admin@opme.com
+echo    Senha:   admin123
+echo.
+echo    BANCO DE DADOS - ADMINER (leve)
+echo    Acesse:  http://localhost:8080
+echo    Servidor: postgres
+echo    Usuario:  sgp_user
+echo    Senha:    sgp_pass123
+echo    Banco:    sgp_db
+echo.
+echo    BANCO DE DADOS - PGADMIN 4 (completo)
+echo    Acesse:  http://localhost:5050
+echo    Login:   admin@sgp.com
 echo    Senha:   admin123
 echo  ============================================================
 echo.
